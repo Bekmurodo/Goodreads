@@ -21,4 +21,9 @@ class BooksTestCase(TestCase):
            self.assertContains(response, book.title)
 
     def test_detail_page(self):
-        pass
+        book = Book.objects.create(title='Book1', description='Description1', isbn='1111111')
+
+        response = self.client.get(reverse('books:detail', kwargs={'id': book.id}))
+
+        self.assertContains(response, book.title)
+        self.assertContains(response, book.description)
