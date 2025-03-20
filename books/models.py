@@ -8,6 +8,7 @@ class Book(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField()
     isbn = models.CharField(max_length=17)
+    cover_picture = models.ImageField(default='default_cover_pic.jpg')
 
     def __str__(self):
         return self.title
@@ -36,6 +37,7 @@ class BookReview(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     comment = models.TextField()
+    cover_picture = models.ImageField(default='default_cover_pic.jpg')
     stars_given = models.IntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(5)]
     )
