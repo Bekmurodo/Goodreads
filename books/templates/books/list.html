@@ -4,18 +4,63 @@
 
 
 {% block content %}
+<div class="row">
+    <div class="col-8">
+        <h1>Books </h1>
+    </div>
+    <div class="col-2">
+          <a class="btn btn-success fs-5" href="{% url 'books:add_book' %}">add books</a>
+    </div>
+</div>
 
-<h1>Books </h1>
 
-{% if books %}
-    <ul>
-        {% for book in books %}
-        <li>
-            <a href="{% url 'books:detail' book.id %}"> {{ book.title }} </a>
-        </li>
-         <br>
+{% if page_obj %}
+        {% for book in page_obj.object_list %}
+        <div class="row mb-4">
+            <div class="col-2">
+                 <img class="cover-pic" src="{{ book.cover_picture.url }}">
+            </div>
+
+            <div class="col-6 ms-4">
+                 <a class="cover-pic fs-2" href="{% url 'books:detail' book.id %}"> {{ book.title }} </a>
+                <p>
+                    {{ book.description }}
+                </p>
+            </div>
+        </div>
+
         {% endfor %}
-    </ul>
+
+    <nav>
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page=1">&laquo; first</a> </li>
+                <li class="page-item"><a class="page-link" href="?page=?page={{ page_obj.previous_page_number }}">previous</a> </li>
+            {% endif %}
+        </ul>
+    </nav>
+
+
+
+
+
+
+
+
+
+
+
+
+        {% if page_obj.has_previous %}
+            <a href="{% url 'books:list' %}?page={{ page_obj.previous_page_number }}">previous</a> |
+        {% endif %}
+
+        {{ page_obj.number }} |
+
+        {% if page_obj.has_next %}
+            <a href="{% url 'books:list' %}?page={{ page_obj.next_page_number }}">next</a>
+        {% endif %}
+
 {% else %}
     No books found
 {% endif %}
