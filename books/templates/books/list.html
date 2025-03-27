@@ -37,6 +37,17 @@
                 <li class="page-item"><a class="page-link" href="?page=1">&laquo; first</a> </li>
                 <li class="page-item"><a class="page-link" href="?page=?page={{ page_obj.previous_page_number }}">previous</a> </li>
             {% endif %}
+
+            <li class="page-item action">
+                <a href="#" class="page-link">{{ page_obj.number }}</a>
+            </li>
+
+            {% if page_obj.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">next</a>
+            </li>
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">last
+                &raquo;</a></li>
+            {%  endif %}
         </ul>
     </nav>
 
@@ -51,15 +62,15 @@
 
 
 
-        {% if page_obj.has_previous %}
-            <a href="{% url 'books:list' %}?page={{ page_obj.previous_page_number }}">previous</a> |
-        {% endif %}
+<!--        {% if page_obj.has_previous %}-->
+<!--            <a href="{% url 'books:list' %}?page={{ page_obj.previous_page_number }}">previous</a> |-->
+<!--        {% endif %}-->
 
-        {{ page_obj.number }} |
+<!--        {{ page_obj.number }} |-->
 
-        {% if page_obj.has_next %}
-            <a href="{% url 'books:list' %}?page={{ page_obj.next_page_number }}">next</a>
-        {% endif %}
+<!--        {% if page_obj.has_next %}-->
+<!--            <a href="{% url 'books:list' %}?page={{ page_obj.next_page_number }}">next</a>-->
+<!--        {% endif %}-->
 
 {% else %}
     No books found
