@@ -15,6 +15,20 @@
     </div>
 </div>
 
+<h3>Reviews</h3> <hr>
+
+{% for review in book.bookreview_set.all %}
+    <div class="row mb-3">
+        <div class="col-2 me-2">
+            <img class="profile-pic" src="{{ review.user.profile_picture.url }}">
+        </div>
+        <div class="col-7">
+          <b>{{ review.user.username }}</b> rate it {{ review.stars_given }} stars <span class="fw-lighter" >{{ review.created_at }}</span>
+          <p class="mt-2 font-monospace">{{ review.comment }}</p>
+
+        </div>
+    </div>
+{% endfor %}
 
 
 
