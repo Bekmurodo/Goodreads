@@ -1,6 +1,9 @@
+
 from django.core.validators import MinValueValidator, MaxLengthValidator, MaxValueValidator
 from django.db import models
 from django.db.models import ForeignKey
+from django.utils import timezone
+
 from users.models import CustomUser
 
 
@@ -41,6 +44,7 @@ class BookReview(models.Model):
     stars_given = models.IntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(5)]
     )
+    created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return f"{self.stars_given} stars to this book by {self.user}"
