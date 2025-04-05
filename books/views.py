@@ -46,6 +46,10 @@ class BookDetailView(View):
         }
         return render(request, 'books/detail.html', context)
 
+class BookReviewView(View):
+    def post(self, request, id):
+        pass
+
 
 
 def add_book(request):
