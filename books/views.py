@@ -1,8 +1,11 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
+from django.template.base import kwarg_re
 from django.template.defaultfilters import title
+from django.urls import reverse
 from django.views.generic import ListView, DetailView, CreateView
-from.models import Book
+from .models import Book, BookReview
 from .forms import BookAddForm, BookReviewForm
 from django.views import View
 
@@ -46,10 +49,20 @@ class BookDetailView(View):
         }
         return render(request, 'books/detail.html', context)
 
-class BookReviewView(View):
+class AddReviewView(LoginRequiredMixin, View):
     def post(self, request, id):
-        pass
+        book = Book.objects.get(id=id)
+        review_form = BookReviewForm(data=request.POST)
 
+        if review_form.is_valid():
+            BookReview.objects.create(
+                book=book,
+                user=request.user,
+                stars_given=review_form.cleaned_data['stars_given'],
+                comment=review_form.cleaned_data['comment']
+            )
+            return redirect(reverse('books:detail', kwargs={'id': book.id}))
+        return render(request, 'books/detail.html', {'book':book, 'review_form': review_form})
 
 
 def add_book(request):
