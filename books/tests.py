@@ -2,7 +2,8 @@ from django.test import TestCase
 from django.urls import reverse
 
 from users.models import CustomUser
-from .models import Book
+from .models import Book, BookAuthor, Author
+
 
 class BooksTestCase(TestCase):
     def test_no_books(self):
@@ -27,12 +28,19 @@ class BooksTestCase(TestCase):
         self.assertContains(response, book3.title)
 
     def test_detail_page(self):
-        book = Book.objects.create(title='Book1', description='Description1', isbn='1111111')
+        book1 = Book.objects.create(title='Book2', description='Description1', isbn='1111111')
+        author1 = Author.objects.create(first_name='Suhrob', last_name='Bekmurodov', email='example@eemail.com', bio='Nice')
+        book_author = BookAuthor.objects.create(book=book1, author=author1)
 
-        response = self.client.get(reverse('books:detail', kwargs={'id': book.id}))
+        response = self.client.get(reverse('books:detail', kwargs={'id': book1.id},))
 
-        self.assertContains(response, book.title)
-        self.assertContains(response, book.description)
+        self.assertContains(response, book1.title)
+        self.assertContains(response, book1.description)
+        self.assertContains(response, author1.first_name)
+        self.assertContains(response, author1.last_name)
+
+
+
 
     def test_search_book(self):
         book1 = Book.objects.create(title='Sport', description='Description1', isbn='1111111')
