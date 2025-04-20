@@ -157,4 +157,4 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 
-CELERY_BROKEN_URL = 'amqp://localhost'
+CELERY_BROKEN_URL =  'amqp://guest:farukh2002@localhost:5672//'
