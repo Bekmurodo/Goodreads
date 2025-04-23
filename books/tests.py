@@ -88,3 +88,36 @@ class BookReviewTestCase(TestCase):
         self.assertEqual(book_reviews[0].book, book)
         self.assertEqual(book_reviews[0].user, user)
 
+
+    def test_edit_review(self):
+        book = Book.objects.create(title='Book1', description='Description1', isbn='1111111')
+
+        user = CustomUser.objects.create(username='momin', first_name='Bekmurodo', )
+        user.set_password('somepass')
+        user.save()
+
+        self.client.login(username='momin', password='somepass')
+
+        self.client.post(reverse('books:reviews', kwargs={'id': book.id}), data={
+            'stars_given': 4,
+            'comment': 'Nice book, recommend for reading.'
+        })
+
+        self.client.post(reverse('books:edit-review', kwargs={'id':book.id}), data={
+            'stars_given': 5,
+            'comment': "Nice to meet you"
+
+        })
+
+        self.assertEqual(book.stars_given, 5)
+        self.assertEqual(book.comment, 'Nice to meet you')
+
+
+
+
+    def test_confirm_delete_review(self):
+        pass
+
+    def test_delete_review(self):
+        pass
+
