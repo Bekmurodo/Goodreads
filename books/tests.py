@@ -98,12 +98,12 @@ class BookReviewTestCase(TestCase):
 
         self.client.login(username='momin', password='somepass')
 
-        self.client.post(reverse('books:reviews', kwargs={'id': book.id}), data={
+        review = self.client.post(reverse('books:reviews', kwargs={'id': book.id}), data={
             'stars_given': 4,
             'comment': 'Nice book, recommend for reading.'
         })
 
-        self.client.post(reverse('books:edit-review', kwargs={'id':book.id}), data={
+        self.client.post(reverse('books:edit-review', kwargs={'id':book.id, 'rid':review.id}), data={
             'stars_given': 5,
             'comment': "Nice to meet you"
 
