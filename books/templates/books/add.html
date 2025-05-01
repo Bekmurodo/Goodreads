@@ -1,16 +1,24 @@
 {% extends "base.html" %}
-
+{% load crispy_forms_tags %}
 {% block title %} Book Page {% endblock %}
 
 {% block content %}
 
-<h1> Add your favorite book </h1>
+<h4 class="mt-2">Add Book</h4>
 
-  <form method="post" action="{% url 'books:add_book' %}">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button  class="btn btn-primary" type="submit">Submit</button>
-  </form>
+    <div class="row">
+        <div class="col-6">
+            <form method="post">
+
+                {% csrf_token %}
+
+                {{ book_form | crispy }}
+
+                <button class="btn btn-success">Add</button>
+
+            </form>
+        </div>
+    </div>
 
 
 
