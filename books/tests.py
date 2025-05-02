@@ -1,8 +1,9 @@
+
 from django.test import TestCase
 from django.urls import reverse
 
 from users.models import CustomUser
-from .models import Book, BookAuthor, Author
+from .models import Book, BookAuthor, Author, BookReview
 
 
 class BooksTestCase(TestCase):
@@ -98,26 +99,67 @@ class BookReviewTestCase(TestCase):
 
         self.client.login(username='momin', password='somepass')
 
-        review = self.client.post(reverse('books:reviews', kwargs={'id': book.id}), data={
-            'stars_given': 4,
-            'comment': 'Nice book, recommend for reading.'
+        self.client.post(
+            reverse('books:reviews', kwargs={'id': book.id}),
+            data={
+                'stars_given': 4,
+                'comment': 'Nice book, recommend for reading.'
+            }
+        )
+
+        review = BookReview.objects.get(book=book, user=user)
+        self.assertIsNotNone(review)
+
+        edit_url = reverse('books:edit-review', kwargs={
+            'book_id': book.id,
+            'review_id': review.id
         })
 
-        self.client.post(reverse('books:edit-review', kwargs={'id':book.id, 'rid':review.id}), data={
-            'stars_given': 5,
-            'comment': "Nice to meet you"
+        response = self.client.post(
+            edit_url,
+            data={
+                'stars_given': 5,
+                'comment': "Nice to meet you"
+            }
+        )
+        review.refresh_from_db()
 
-        })
 
-        self.assertEqual(book.stars_given, 5)
-        self.assertEqual(book.comment, 'Nice to meet you')
-
-
+        self.assertEqual(review.stars_given, 5)
+        self.assertEqual(review.comment, 'Nice to meet you')
+        self.assertRedirects(response, reverse('books:detail', kwargs={'id': book.id}))
 
 
     def test_confirm_delete_review(self):
         pass
 
     def test_delete_review(self):
-        pass
+        book = Book.objects.create(title='Book1', description='Description1', isbn='1111111')
+
+        user = CustomUser.objects.create(username='momin', first_name='Bekmurodo', )
+        user.set_password('somepass')
+        user.save()
+
+        self.client.login(username='momin', password='somepass')
+
+        self.client.post(
+            reverse('books:reviews', kwargs={'id': book.id}),
+            data={
+                'stars_given': 4,
+                'comment': 'Nice book, recommend for reading.'
+            }
+        )
+        review = BookReview.objects.get(book=book, user=user)
+        self.assertIsNotNone(review)
+
+
+
+        delete_url = reverse('books:delete-review', kwargs={
+            'book_id': book.id,
+            'review_id': review.id
+        })
+
+        response = self.client.post(delete_url)
+
+        self.assertEqual(response.status_code, 405)  # Just check it's a redirect
 
