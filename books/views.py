@@ -1,7 +1,9 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 from django.template.base import kwarg_re
+from django.template.context_processors import request
 from django.template.defaultfilters import title
 from django.urls import reverse
 from django.views.generic import ListView, DetailView, CreateView
@@ -66,16 +68,23 @@ class AddReviewView(LoginRequiredMixin, View):
         return render(request, 'books/detail.html', {'book':book, 'review_form': review_form})
 
 
-def add_book(request):
-    if request.method == 'POST':
-        form = BookAddForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('books:list')  # Перенаправление на страницу со списком книг
-    else:
-        form = BookAddForm()
+class AddBookView(View):
+    def get(self, request):
+        book_form = BookAddForm()
+        return render(request, 'books/add.html', {'book_form': book_form})
 
-    return render(request, 'books/add.html', {'form': form})
+    def post(self, request):
+        book_form = BookAddForm(data=request.POST)
+
+        if book_form.is_valid():
+            Book.objects.create(
+                title=book_form.cleaned_data['title'],
+                description=book_form.cleaned_data['description'],
+                isbn=book_form.cleaned_data['isbn'],
+                cover_picture=book_form.cleaned_data['cover_picture']
+            )
+            return redirect(reverse('books:list'))
+        return render(request, 'books/list.html', {'book_form': book_form})
 
 
 class EditReviewView(LoginRequiredMixin, View):
@@ -106,4 +115,24 @@ class EditReviewView(LoginRequiredMixin, View):
 
 class ConfirmDeleteReviewView(LoginRequiredMixin, View):
     def get(self, request, book_id, review_id):
-        return render(request, 'books/confirm_delete_review.html')
+        book = Book.objects.get(id=book_id)
+        review = book.bookreview_set.get(id=review_id)
+        context = {
+            'book': book,
+            'review': review
+        }
+
+        return render(request, 'books/confirm_delete_review.html', context)
+
+class DeleteReviewView(LoginRequiredMixin, View):
+    def get(self, request, book_id, review_id):
+        book = Book.objects.get(id=book_id)
+        review = book.bookreview_set.get(id=review_id)
+
+        review.delete()
+        messages.success(request, "You have successfully deleted this review")
+
+        return redirect(reverse('books:detail', kwargs={"id": book.id}))
+
+# Uyga vazifa shu oxirgi 3ta viewga test yozish.
+
