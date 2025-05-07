@@ -2,11 +2,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
-from django.template.base import kwarg_re
-from django.template.context_processors import request
-from django.template.defaultfilters import title
+
 from django.urls import reverse
-from django.views.generic import ListView, DetailView, CreateView
 from .models import Book, BookReview
 from .forms import BookAddForm, BookReviewForm
 from django.views import View
