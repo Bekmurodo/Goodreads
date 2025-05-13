@@ -11,9 +11,6 @@ class AuthorAdmin(admin.ModelAdmin):
 class BookAuthorAdmin(admin.ModelAdmin):
     pass
 
-class BookAuthorAdmin(admin.ModelAdmin):
-    pass
-
 class BookReviewAdmin(admin.ModelAdmin):
     pass
 
